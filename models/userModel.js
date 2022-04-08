@@ -15,10 +15,16 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a password'],
     },
+    phone: Number,
+    address: String,    
+    college: String,
+    faculty: String,
+    program: String,
+    
+    
   },
   {
     timestamps: true,  
-    // collection: "users"
   }
 )
 

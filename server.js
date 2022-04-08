@@ -4,7 +4,6 @@ let express = require('express'),
     mongoose = require('mongoose'),
     colors = require('colors')
     cors = require('cors'),
-    bodyParser = require('body-parser'),
     dotenv = require('dotenv').config()
     dbConfig = require('./config/db');
     path = require('path');
@@ -13,15 +12,13 @@ const app = express()
 
 // // เรียกใช้ app
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cors());
 
 
-// app.use('/post', postRoute);
-app.use('/users', require('./routes/userRoutes'))
+app.use('/posts', require('./routes/post.routes'))
+app.use('/users', require('./routes/user.routes'))
 
 
 mongoose.Promise = global.Promise;
