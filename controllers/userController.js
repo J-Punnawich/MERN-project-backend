@@ -56,6 +56,8 @@ const loginUser = asyncHandler(async (req, res) => {
   // Check for user email
   const user = await User.findOne({ email });
 
+  // หรือจะใช้ const user = await User.findOneAndUpdate({ email },{new: true}); จะอัพเดทเวลาการ login ให้
+
   if (user && (await bcrypt.compare(password, user.password))) {
     res.json({
       _id: user.id,
@@ -64,6 +66,22 @@ const loginUser = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
     });
     console.log("Login success")
+
+    // Payload
+    const payload = {
+      user: {
+        username: user.username,
+        role: user.role,
+      },
+    };
+    // Generate Token
+    // jwt.sign(payload, "jwtSecret", { expiresIn: 3600 }, (err, token) => {
+    //   if (err) throw err;
+    //   res.json({ token, payload });
+    // });
+
+
+
   } else {
     res.status(400);
     throw new Error("Invalid credentials");

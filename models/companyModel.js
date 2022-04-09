@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
-const userSchema = mongoose.Schema(
+const companySchema = mongoose.Schema(
   {
-    username: {
+    name: {
       type: String,
       required: [true, 'Please add a name'],
     },
@@ -15,15 +15,11 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a password'],
     },
-    role: {                 // role as student, company, admin
-      type: String,
-      default: 'student'
-    },
     phone: Number,
+    BusinessType: String,    // ประเภทธุรกิจ
+    desc: String,
+    benefit: String,
     address: String,    
-    college: String,
-    faculty: String,
-    program: String,
     
     
   },
@@ -32,4 +28,4 @@ const userSchema = mongoose.Schema(
   }
 )
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('Company', companySchema)

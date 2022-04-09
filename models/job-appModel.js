@@ -14,8 +14,10 @@ const appSchema = mongoose.Schema(
       required: true,
       ref: 'Post',
     },
-    status: String,     // สถานนะการยอมรับเข้าทำงาน
-
+    status: {           // สถานนะการยอมรับเข้าทำงาน => accept, wait, denide
+      type: String,     
+      default: 'wait'
+    },
   },
   {
     timestamps: true,
