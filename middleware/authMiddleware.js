@@ -17,7 +17,7 @@ const protect = asyncHandler(async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-      // Get user from the token
+      // Get user from the token                      .select('-password')   ใส่ลบ( - )คือ ไม่ต้องการข้อมูล password 
       req.user = await User.findById(decoded.id).select('-password')
 
       next()
@@ -35,3 +35,4 @@ const protect = asyncHandler(async (req, res, next) => {
 })
 
 module.exports = { protect }
+

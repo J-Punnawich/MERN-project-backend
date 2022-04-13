@@ -16,9 +16,9 @@ const postSchema = mongoose.Schema(
     faculty: String,    // คณะ
     jobType: String,    // ประเภทงาน
     position: String,   // ตำแหน่ง
-    // salary: [],
+    // salary: [],  
     rate: Number,       // อัตราที่รับ
-    county: String,     // จังหวัดที่ทำงาน
+    province: String,     // จังหวัดที่ทำงาน
     address: String,    // ที่อยู่บริษัท
 
     post_expire: Date,  // *รอแก้ ระยะเวลาโพส

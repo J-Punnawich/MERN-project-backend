@@ -59,28 +59,20 @@ const loginUser = asyncHandler(async (req, res) => {
   // หรือจะใช้ const user = await User.findOneAndUpdate({ email },{new: true}); จะอัพเดทเวลาการ login ให้
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    res.json({
-      _id: user.id,
-      name: user.name,
-      email: user.email,
-      token: generateToken(user._id),
-    });
-    console.log("Login success")
-
     // Payload
     const payload = {
       user: {
-        username: user.username,
+        name: user.name,
         role: user.role,
       },
     };
-    // Generate Token
-    // jwt.sign(payload, "jwtSecret", { expiresIn: 3600 }, (err, token) => {
-    //   if (err) throw err;
-    //   res.json({ token, payload });
-    // });
+
+    res.json({
+      payload, token: generateToken(user._id)
+    });
 
 
+    console.log("Login success")
 
   } else {
     res.status(400);
@@ -89,14 +81,23 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 
-// @desc    Get user data
-// @route   GET /users/me
+
+
+
+// @desc   Get current user data
+// @route   Post /users/current-user
 // @access  Private
-const getMe = asyncHandler(async (req, res) => {
+const currentUser = asyncHandler(async (req, res) => {
+  try{
+  
+  console.log('middleware',req.user)
   res.status(200).json(req.user);
+  
+  }catch(err){
+    console.log(err)
+    res.status(500).send('Server Error!')
+  }
 });
-
-
 
 // Generate JWT
 const generateToken = (id) => {
@@ -108,5 +109,5 @@ const generateToken = (id) => {
 module.exports = {
   registerUser,
   loginUser,
-  getMe,
+  currentUser,
 };

@@ -3,12 +3,14 @@ const router = express.Router()
 const {
   registerUser,
   loginUser,
-  getMe,
+  currentUser,
 } = require('../controllers/userController')
 const { protect } = require('../middleware/authMiddleware')
 
 router.post('/', registerUser)
-router.post('/login', loginUser)
-router.get('/me', protect, getMe)
+router.post('/signin', loginUser)
+
+// Verify token from Client and POST user data back
+router.post('/current-user', protect, currentUser)
 
 module.exports = router
