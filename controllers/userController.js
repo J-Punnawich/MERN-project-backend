@@ -7,7 +7,7 @@ let jwt = require("jsonwebtoken");
 // POST /users
 // access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email,role, password } = req.body;
 
   if (!name || !email || !password) {
     res.status(400)
@@ -30,6 +30,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({
     name,
     email,
+    role,
     password: hashedPassword,
   });
 
@@ -38,6 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
       token: generateToken(user._id),
     });
     console.log("Register success")

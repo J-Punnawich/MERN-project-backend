@@ -31,6 +31,9 @@ const postSchema = mongoose.Schema(
       default: false
     }
     
+    
+
+
   },
   {
     timestamps: true,

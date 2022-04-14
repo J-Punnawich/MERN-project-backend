@@ -18,7 +18,7 @@ const protect = asyncHandler(async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
       // Get user from the token                      .select('-password')   ใส่ลบ( - )คือ ไม่ต้องการข้อมูล password 
-      req.user = await User.findById(decoded.id).select('-password')
+      req.user = await User.findById(decoded.id).select('-password').exec()
 
       next()
     } catch (error) {
@@ -34,5 +34,20 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 })
 
-module.exports = { protect }
+const adminCheck = asyncHandler( async(req, res, next) => {
+  try {
+    const { name } = req.user
+    const adminUser = await User.findOne({ name }).exec()
+    if(adminUser.role !== 'admin'){
+      res.status(403).send(err,'Admin Access denied')
+    } else{
+      next()
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(401).send("Admin Access denied");
+  }
+})
+
+module.exports = { protect, adminCheck}
 
