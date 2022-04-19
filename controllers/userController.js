@@ -1,21 +1,21 @@
 let jwt = require("jsonwebtoken");
     bcrypt = require("bcrypt");
     asyncHandler = require("express-async-handler");
-    User = require("../models/userModel");
+    userSchema = require("../models/userModel");
 
-// Register new user
-// POST /users
-// access  Public
+// @desc        Register new user
+// @End point   PointPOST /users
+// @access      Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email,role, password } = req.body;
+  const { email,role, password } = req.body;
 
-  if (!name || !email || !password) {
+  if (!email || !password) {
     res.status(400)
     throw new Error("Please add all fields");
   }
 
 // Check if user exists
-  const userExists = await User.findOne({ email });
+  const userExists = await userSchema.findOne({ email });
 
   if (userExists) {
     res.status(400);
@@ -27,8 +27,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   // Create user
-  const user = await User.create({
-    name,
+  const user = await userSchema.create({
     email,
     role,
     password: hashedPassword,
@@ -37,7 +36,6 @@ const registerUser = asyncHandler(async (req, res) => {
   if (user) {
     res.status(201).json({
       _id: user.id,
-      name: user.name,
       email: user.email,
       role: user.role,
       token: generateToken(user._id),
@@ -50,13 +48,13 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 // @desc    Authenticate a user
-// @route   POST /users/login
+// @End Point   POST /users/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   // Check for user email
-  const user = await User.findOne({ email });
+  const user = await userSchema.findOne({ email });
 
   // หรือจะใช้ const user = await User.findOneAndUpdate({ email },{new: true}); จะอัพเดทเวลาการ login ให้
 
@@ -64,6 +62,7 @@ const loginUser = asyncHandler(async (req, res) => {
     // Payload
     const payload = {
       user: {
+        id: user.id,
         name: user.name,
         role: user.role,
       },
@@ -78,21 +77,48 @@ const loginUser = asyncHandler(async (req, res) => {
 
   } else {
     res.status(400);
-    throw new Error("Invalid credentials");
+    throw new Error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณากรอกข้อมูลใหม่อีกครั้ง");
   }
 });
 
+// @desc  update user
+// @End Point   Put /users/edit-user
+// @access  Private
+const updateUser = asyncHandler(async (req, res) => {
 
+  try{
+    const user = await userSchema.findById( req.params.id)
+
+    if(!user){
+      res.status(400);
+      throw new Error("User not exists");
+    }
+    console.log(req.body)
+    const updatedUser = await userSchema.findByIdAndUpdate(
+      req.params.id,
+      req.value,
+      {
+        new: true,
+      }
+    );
+    console.log(updatedUser.email +'Updated')
+    res.status(200).json({msg: 'Edited'});
+  }catch(err){
+    console.log(err)
+    res.status(500).send('Server Error!')
+  }
+
+})
 
 
 
 // @desc   Get current user data
-// @route   Post /users/current-user
+// @End Point   Post /users/current-user
 // @access  Private
 const currentUser = asyncHandler(async (req, res) => {
   try{
   
-  console.log('middleware',req.user)
+  console.log('Currentuser',req.user)
   res.status(200).json(req.user);
   
   }catch(err){
@@ -111,5 +137,7 @@ const generateToken = (id) => {
 module.exports = {
   registerUser,
   loginUser,
+  updateUser,
   currentUser,
+
 };

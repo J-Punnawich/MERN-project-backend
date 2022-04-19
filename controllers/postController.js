@@ -17,23 +17,26 @@ const getPosts = asyncHandler(async (req, res) => {
 });
 
 
-// @desc    Get Unable posts
-// @route   GET /posts/
-// @access  Public
-// const getUnablePosts = asyncHandler(async (req, res) => {
-//   const posts = await postSchema.find({enabled: false}).populate("user");
-//                                  // ส่งไปเฉพาะ post ที่ยังไม่ได้ enable          
-//   res.status(200).json(posts);
-// });
-
 // @desc    Get user posts    
 // @route   GET /
 // @access  Private
 const getUserPosts = asyncHandler(async (req, res) => {
   const posts = await postSchema.find({ user: req.user.id }); // find() จะแสดงโพสทั้งหมด => ใส่ user.id
-  //  => แสดงโพสทั้งหมดที่เป็นของ user id นั้นๆ
+                                                              //  => แสดงโพสทั้งหมดที่เป็นของ user id นั้นๆ
   res.status(200).json(posts);
 });
+
+
+// @desc    Get single post 
+// @route   GET /
+// @access  Public
+const currentPost = asyncHandler(async (req, res) => {
+  const post = await postSchema.findById( req.params.id ).populate("user");  // find current post & user data 
+                                      
+  console.log('Current post')
+  res.status(200).json(post);
+});
+
 
 // @desc    Set post
 // @route   POST /posts
@@ -57,7 +60,7 @@ const setPost = asyncHandler(async (req, res) => {
 // @route   PUT /posts/:id
 // @access  Private
 const updatePost = asyncHandler(async (req, res) => {
-  const post = await postSchema.findById(req.params.id);
+  const post = await postSchema.findById( req.params.id );
 
   if (!post) {
     res.status(400);
@@ -91,7 +94,7 @@ const updatePost = asyncHandler(async (req, res) => {
 // @route   DELETE /posts/:id
 // @access  Private
 const deletePost = asyncHandler(async (req, res) => {
-  const post = await postSchema.findById(req.params.id);
+  const post = await postSchema.findById( req.params.id );
 
   if (!post) {
     res.status(400);
@@ -104,11 +107,11 @@ const deletePost = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  // Make sure the logged in user matches the post user
-  // if (post.user.toString() !== req.user.id) {
-  //   res.status(401);
-  //   throw new Error("User not authorized");
-  // }
+  // Make sure the logged in user matches the post user 
+  if (post.user.toString() !== req.user.id) {
+    res.status(401);
+    throw new Error("User not authorized");
+  }
 
   await post.remove();
 
@@ -131,20 +134,9 @@ const changeStatus = asyncHandler(async (req, res) => {
       throw new Error("Post not found");
     }
 
-    // Check for user
-    // if (!req.user) {
-    //   res.status(401)
-    //   throw new Error('User not found')
-    // }
-
-    // Make sure the logged in user matches the post user
-    // if (post.user.toString() !== req.user.id) {
-    //   res.status(401)
-    //   throw new Error('User not authorized')
-    // }
 
     const changedStatus = await postSchema.findByIdAndUpdate(
-      
+    
       { _id: req.body.id },
       req.body,
       {
@@ -162,6 +154,7 @@ const changeStatus = asyncHandler(async (req, res) => {
 module.exports = {
   getPosts,
   getUserPosts,
+  currentPost,
   setPost,
   updatePost,
   deletePost,
