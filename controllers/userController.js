@@ -87,21 +87,21 @@ const loginUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
 
   try{
-    const user = await userSchema.findById( req.params.id)
+    const user = await userSchema.findById( req.user.id)
 
     if(!user){
       res.status(400);
       throw new Error("User not exists");
     }
-    console.log(req.body)
+    
     const updatedUser = await userSchema.findByIdAndUpdate(
-      req.params.id,
-      req.value,
+      req.user.id,
+      req.body,
       {
         new: true,
       }
     );
-    console.log(updatedUser.email +'Updated')
+    console.log('Updated',updatedUser)
     res.status(200).json({msg: 'Edited'});
   }catch(err){
     console.log(err)
@@ -117,7 +117,7 @@ const updateUser = asyncHandler(async (req, res) => {
 // @access  Private
 const currentUser = asyncHandler(async (req, res) => {
   try{
-  
+  // const user = await userSchema.findById(req.id)
   console.log('Currentuser',req.user)
   res.status(200).json(req.user);
   

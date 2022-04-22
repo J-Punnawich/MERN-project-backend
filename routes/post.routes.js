@@ -2,27 +2,31 @@ const express = require('express')
 const router = express.Router()
 const {
   getPosts,
-  getUserPosts,
   currentPost,
+  getUserPosts,
+  getPost,
   setPost,
   updatePost,
   deletePost,
-
   changeStatus,
 } = require('../controllers/postController')
-
 const { protect, adminCheck } = require('../middleware/authMiddleware')
+
 // @role USER
 // get all posts
-router.route('/all').get(getPosts)
-router.route('/edit-post/:id').get(protect, currentPost)
+router.route('/all').get( getPosts)
+
+// get post & company data when user click in post 
+router.route('/:id').get( currentPost) 
 
 
+
+// @role COMPANY
 // ใส่ protect => ยืนยัน token จะได้ user id เพื่อนำมาเช็คกับ post.user.id
-router.route('/').get(getUserPosts)
+router.route('/').get(protect, getUserPosts)             // get post ทั้งหมด ของ company
 router.route('/').post(protect, setPost)
-router.route('/:id').put(protect, updatePost)
-router.route('/:id').delete(protect, deletePost)       // ต้องใช้ token และ id post 
+router.route('/edit-post/:id').put(protect, updatePost)
+router.route('/:id').delete(protect, deletePost)         // ต้องใช้ token และ id post 
 
 
 // @role ADMIN

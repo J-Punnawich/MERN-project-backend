@@ -17,21 +17,21 @@ const getPosts = asyncHandler(async (req, res) => {
 });
 
 
-// @desc    Get user posts    
+// @desc    Get Company all posts    
 // @route   GET /
 // @access  Private
-const getUserPosts = asyncHandler(async (req, res) => {
-  const posts = await postSchema.find({ user: req.user.id }); // find() จะแสดงโพสทั้งหมด => ใส่ user.id
+const getUserPosts = asyncHandler(async (req, res) => {       
+  const posts = await postSchema.find({ user: req.user.id }); // find() จะแสดงโพสทั้งหมด => ใส่ user.id 
                                                               //  => แสดงโพสทั้งหมดที่เป็นของ user id นั้นๆ
-  res.status(200).json(posts);
+  res.status(200).json(posts);                                // ใช้ req.user.id ได้เลยเพราะถอดรหัสมาจาก token แล้ว
 });
 
 
-// @desc    Get single post 
+// @desc    User click in post
 // @route   GET /
 // @access  Public
 const currentPost = asyncHandler(async (req, res) => {
-  const post = await postSchema.findById( req.params.id ).populate("user");  // find current post & user data 
+  const post = await postSchema.findById( req.params.id ).populate("user");  // find current post & company data 
                                       
   console.log('Current post')
   res.status(200).json(post);
