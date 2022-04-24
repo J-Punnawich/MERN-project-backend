@@ -4,7 +4,7 @@ const {
   getPosts,
   currentPost,
   getUserPosts,
-  getPost,
+  
   setPost,
   updatePost,
   deletePost,
@@ -17,7 +17,7 @@ const { protect, adminCheck } = require('../middleware/authMiddleware')
 router.route('/all').get( getPosts)
 
 // get post & company data when user click in post 
-router.route('/:id').get( currentPost) 
+router.route('/:id').get(currentPost) 
 
 
 

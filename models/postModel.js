@@ -18,14 +18,15 @@ const postSchema = mongoose.Schema(
     position: String,   // ตำแหน่ง
     // salary: [],  
     rate: Number,       // อัตราที่รับ
-    province: String,     // จังหวัดที่ทำงาน
-    address: String,    // ที่อยู่บริษัท
-
+    provinceAddress: String,     // จังหวัดที่ทำงาน
+    companyAddress: String,    // ที่อยู่บริษัท
+    
     post_expire: Date,  // *รอแก้ ระยะเวลาโพส
+
     boost: {            // boost post
-      tpye: Boolean,
+      type: Boolean,
       default: false
-    },     
+    },
     enabled: {          // อนุญาตให้โพส
       type: Boolean,
       default: false

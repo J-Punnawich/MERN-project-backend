@@ -7,7 +7,7 @@ let jwt = require("jsonwebtoken");
 // @End point   PointPOST /users
 // @access      Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { email,role, password } = req.body;
+  const { email, password } = req.body;
 
   if (!email || !password) {
     res.status(400)
@@ -28,9 +28,23 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // Create user
   const user = await userSchema.create({
+    // name: req.body.name,
     email,
-    role,
     password: hashedPassword,
+    role: req.body.role,
+    // img: req.body.img,
+
+    //@Student
+    // phone: req.body.phone,
+    // address: req.body.address,
+    // college: req.body.college,
+    // faculty: req.body.faculty,
+    // program: req.body.program,
+    //@Company
+    // BusinessType: req.body.BusinessType,
+    // desc: req.body.desc,
+    // benefit: req.body.benefit,
+
   });
 
   if (user) {

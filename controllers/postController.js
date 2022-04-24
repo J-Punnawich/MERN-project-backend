@@ -1,20 +1,21 @@
 const asyncHandler = require("express-async-handler");
-const { enabled } = require("express/lib/application");
+
 
 const postSchema = require("../models/postModel");
 const User = require("../models/userModel");
 const { post } = require("../routes/post.routes");
 
-
-
-// @desc    Get all posts
-// @route   GET /posts/
-// @access  Public
+// @desc    Get posts
+// @route   GET /posts
+// @access  Private
 const getPosts = asyncHandler(async (req, res) => {
-  const posts = await postSchema.find().populate("user");     // populate("user") ทำให้ตอนส่งข้อมูล post ไป
-                                                              //   จะส่งข้อมูล user เจ้าของ post ไปด้วย
-  res.status(200).json(posts);
-});
+ 
+  const posts = await postSchema.find().populate('user')   // find() จะแสดงโพสทั้งหมด => ใส่ user.id 
+                                                               //  => แสดงโพสทั้งหมดที่เป็นของ user id นั้นๆ
+  res.status(200).json(posts)
+})
+
+
 
 
 // @desc    Get Company all posts    
@@ -31,7 +32,7 @@ const getUserPosts = asyncHandler(async (req, res) => {
 // @route   GET /
 // @access  Public
 const currentPost = asyncHandler(async (req, res) => {
-  const post = await postSchema.findById( req.params.id ).populate("user");  // find current post & company data 
+  const post = await postSchema.findById( req.params.id );  // find current post & company data 
                                       
   console.log('Current post')
   res.status(200).json(post);
@@ -50,6 +51,16 @@ const setPost = asyncHandler(async (req, res) => {
   const post = await postSchema.create({
     user: req.user.id,
     desc: req.body.desc,
+    benefit: req.body.benefit,
+    college: req.body.college,
+    faculty: req.body.faculty,
+    program: req.body.program,
+    jobType: req.body.jobType,
+    position: req.body.position,
+    rate: req.body.rate,
+    companyAddress: req.body.companyAddress,
+    provinceAddress: req.body.provinceAddress,
+    boost: req.body.boost,
   });
 
   console.log("Created post");
@@ -108,10 +119,10 @@ const deletePost = asyncHandler(async (req, res) => {
   }
 
   // Make sure the logged in user matches the post user 
-  if (post.user.toString() !== req.user.id) {
-    res.status(401);
-    throw new Error("User not authorized");
-  }
+  // if (post.user.toString() !== req.user.id) {
+  //   res.status(401);
+  //   throw new Error("User not authorized");
+  // }
 
   await post.remove();
 
@@ -127,13 +138,14 @@ const changeStatus = asyncHandler(async (req, res) => {
     console.log(req.body)
     const post = await postSchema.findById(
       { _id: req.body.id },
-      { enabled: req.body.enabled }
+      // { enabled: req.body.enabled }
     );
     if (!post) {
       res.status(400);
       throw new Error("Post not found");
     }
 
+    
 
     const changedStatus = await postSchema.findByIdAndUpdate(
     

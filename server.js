@@ -19,6 +19,7 @@ app.use(cors());
 
 app.use('/posts', require('./routes/post.routes'))
 app.use('/users', require('./routes/user.routes'))
+app.use('/jobapps', require('./routes/job.routes'))
 
 
 mongoose.Promise = global.Promise;

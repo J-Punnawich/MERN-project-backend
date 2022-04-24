@@ -15,9 +15,9 @@ const appSchema = mongoose.Schema(
       ref: 'Post',
     },
 
-    resume:{
-      File              // ** ไฟล์ resume
-    },
+    // resume:{
+    //   File              // ** ไฟล์ resume
+    // },
     
     status: {           // สถานนะการยอมรับเข้าทำงาน => accept, wait, denide
       type: String,     
