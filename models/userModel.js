@@ -15,11 +15,11 @@ const userSchema = mongoose.Schema(
       type: String,
       default: 'student'
     },
-
-    img: Buffer,            // student or company img 
+    img: String, 
+    transcript: String,            // student or company img 
 
     //@student 
-    phone: Number,
+    phone: String,
     address: String,    
     college: String,
     faculty: String,
@@ -28,8 +28,8 @@ const userSchema = mongoose.Schema(
 
     //@company
     // phone: Number,
-    BusinessType: String,    // ประเภทธุรกิจ
-    desc: String,
+    business: String,    // ประเภทธุรกิจ
+    details: String,
     benefit: String,
     // address: String,   
     

@@ -21,7 +21,7 @@ router.post('/current-user', protect, currentUser)
 
 
 
-router.post("/current-admin", protect,adminCheck, currentUser);  //*** เดี๋ยวต้องแก้ currentUser เป็น currentAdmin หรืออาจจะไม่ต้องมีเลย
+router.post("/current-admin", protect,adminCheck);  //*** เดี๋ยวต้องแก้ currentUser เป็น currentAdmin หรืออาจจะไม่ต้องมีเลย
 
 
 

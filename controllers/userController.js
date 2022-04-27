@@ -1,8 +1,9 @@
 let jwt = require("jsonwebtoken");
-    bcrypt = require("bcrypt");
-    asyncHandler = require("express-async-handler");
-    userSchema = require("../models/userModel");
-
+bcrypt = require("bcrypt");
+asyncHandler = require("express-async-handler");
+userSchema = require("../models/userModel");
+const appSchema = require("../models/jobappModel");
+const postSchema = require('../models/postModel')
 // @desc        Register new user
 // @End point   PointPOST /users
 // @access      Public
@@ -10,11 +11,11 @@ const registerUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.status(400)
+    res.status(400);
     throw new Error("Please add all fields");
   }
 
-// Check if user exists
+  // Check if user exists
   const userExists = await userSchema.findOne({ email });
 
   if (userExists) {
@@ -32,19 +33,6 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password: hashedPassword,
     role: req.body.role,
-    // img: req.body.img,
-
-    //@Student
-    // phone: req.body.phone,
-    // address: req.body.address,
-    // college: req.body.college,
-    // faculty: req.body.faculty,
-    // program: req.body.program,
-    //@Company
-    // BusinessType: req.body.BusinessType,
-    // desc: req.body.desc,
-    // benefit: req.body.benefit,
-
   });
 
   if (user) {
@@ -54,7 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
       role: user.role,
       token: generateToken(user._id),
     });
-    console.log("Register success")
+    console.log("Register success");
   } else {
     res.status(400);
     throw new Error("Invalid user data");
@@ -83,31 +71,59 @@ const loginUser = asyncHandler(async (req, res) => {
     };
 
     res.json({
-      payload, token: generateToken(user._id)
+      payload,
+      token: generateToken(user._id),
     });
 
+    console.log("Login success");
 
-    console.log("Login success")
+    if (user.role === "admin") {
+      const posts = await postSchema.find({ postDateExpire: { $ne: "" } });
+      console.log("total posts : ", posts.length);
+      for (var i = 0; i < posts.length; i++) {
+        var dateExp = posts[i].postDateExpire;
+        var result = new Date().getTime() > new Date(dateExp).getTime();
+        console.log(i);
+        console.log(
+          posts[i].id,
+          " ",
+          i,
+          " ",
+          result,
+          new Date(dateExp).getTime(),
+          new Date().getTime()
+        );
+        if (result === true) {
+          await postSchema.findByIdAndDelete(posts[i].id);
+          console.log(posts[i].id, " ", i, " del");
+          await appSchema.findOneAndDelete({'post':posts[i].id})
+        }
 
+      }
+    
+    }
   } else {
     res.status(400);
-    throw new Error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณากรอกข้อมูลใหม่อีกครั้ง");
+    throw new Error(
+      "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณากรอกข้อมูลใหม่อีกครั้ง"
+    );
   }
 });
+
+
 
 // @desc  update user
 // @End Point   Put /users/edit-user
 // @access  Private
 const updateUser = asyncHandler(async (req, res) => {
+  try {
+    const user = await userSchema.findById(req.user.id);
 
-  try{
-    const user = await userSchema.findById( req.user.id)
-
-    if(!user){
+    if (!user) {
       res.status(400);
       throw new Error("User not exists");
     }
-    
+
     const updatedUser = await userSchema.findByIdAndUpdate(
       req.user.id,
       req.body,
@@ -115,36 +131,35 @@ const updateUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-    console.log('Updated',updatedUser)
-    res.status(200).json({msg: 'Edited'});
-  }catch(err){
-    console.log(err)
-    res.status(500).send('Server Error!')
+    console.log("Updated", updatedUser);
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error!");
   }
-
-})
-
-
+});
 
 // @desc   Get current user data
 // @End Point   Post /users/current-user
 // @access  Private
 const currentUser = asyncHandler(async (req, res) => {
-  try{
-  // const user = await userSchema.findById(req.id)
-  console.log('Currentuser',req.user)
-  res.status(200).json(req.user);
-  
-  }catch(err){
-    console.log(err)
-    res.status(500).send('Server Error!')
+  try {
+    const user = await userSchema
+      .findById(req.user.id)
+      .select("-password")
+      .exec(); //** ไม่ได้ส่งรูปไป
+    console.log("Currentuser", user);
+    res.status(200).json(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error!");
   }
 });
 
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "999h",
   });
 };
 
@@ -153,5 +168,4 @@ module.exports = {
   loginUser,
   updateUser,
   currentUser,
-
 };

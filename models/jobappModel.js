@@ -14,15 +14,20 @@ const appSchema = mongoose.Schema(
       required: true,
       ref: 'Post',
     },
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
 
-    // resume:{
-    //   File              // ** ไฟล์ resume
-    // },
-    
-    status: {           // สถานนะการยอมรับเข้าทำงาน => accept, wait, denide
+    status: {           // สถานนะการยอมรับเข้าทำงาน => Approved, wait, denide
       type: String,     
       default: 'wait'
     },
+    
+    resume:String,
+    
+    
   },
   {
     timestamps: true,
