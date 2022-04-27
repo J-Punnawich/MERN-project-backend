@@ -2,26 +2,38 @@ const mongoose = require('mongoose')
 
 const userSchema = mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: [true, 'Please add a name'],
+    name: {                    //@student ชื่อ นามสกุล 
+      type: String,            //@company ชื่อ
     },
     email: {
       type: String,
-      required: [true, 'Please add an email'],
-      unique: true,
     },
     password: {
       type: String,
-      required: [true, 'Please add a password'],
     },
-    phone: Number,
+    role: {                 // role as student, company, admin
+      type: String,
+      default: 'student'
+    },
+    img: String, 
+    transcript: String,            // student or company img 
+
+    //@student 
+    phone: String,
     address: String,    
     college: String,
     faculty: String,
     program: String,
+
+
+    //@company
+    // phone: Number,
+    business: String,    // ประเภทธุรกิจ
+    details: String,
+    benefit: String,
+    // address: String,   
     
-    
+
   },
   {
     timestamps: true,  
