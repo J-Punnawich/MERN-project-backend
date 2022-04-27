@@ -37,7 +37,7 @@ const protect = asyncHandler(async (req, res, next) => {
 const adminCheck = asyncHandler( async(req, res, next) => {
   try {
     const adminUser = await User.findById( req.user.id ).exec()
-    if(adminUser.role === 'admin'){
+    if(adminUser.role !== 'admin'){
       res.status(403).send(err,'Admin Access denied')
     } else{
       next()
