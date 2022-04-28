@@ -5,9 +5,7 @@ const postSchema = require('../models/postModel')
 
 
 
-
 const GetSearch = asyncHandler(async (req, res) => {
-    
   try{  
     if(req.body.wageMin >=0 || req.body.wageMax >= 0){
       if (req.body.wageMin >=0 && req.body.wageMax >= 0 ){
@@ -37,6 +35,7 @@ const GetSearch = asyncHandler(async (req, res) => {
       console.log('Getsearch is error!')
     } 
 }
+
 )
 const GetSearchBoost = asyncHandler(async (req, res) => {
       console.log('req--->',req.body)
@@ -117,11 +116,14 @@ res.status(200).json(post2)
 })
 
 
+const adminSearch = asyncHandler(async (req, res) => {
+  var post = await postSchema.find().where({'slipimg' : { $nin :[null,'']}}).populate('user')
+
+})
 
 
 
 
 
-
-  module.exports = {GetSearch,SelectedPost,SubmitJob,GetSearchBoost,GetSearchNotBoost}
+  module.exports = {GetSearch,SelectedPost,SubmitJob,GetSearchBoost,GetSearchNotBoost,adminSearch}
 

@@ -8,7 +8,7 @@ const {
   updatePost,
   deletePost,
   changeEnable,
-
+  adgetPost,
   payPost,
   getpayPost,
 } = require('../controllers/postController')
@@ -28,6 +28,7 @@ router.route('/').post(protect, setPost)
 router.route('/edit-post/:id').put(protect, updatePost)
 router.route('/:id').delete(protect, deletePost)         // ต้องใช้ token และ id post 
 router.route('/pay/:id').put(protect,payPost).get(protect,getpayPost)
+router.route('/adget/xx').get(protect,adgetPost)             // get post ทั้งหมด ของ company
 
 
 // @role ADMIN

@@ -5,7 +5,7 @@ const {
   loginUser,
   updateUser,
   currentUser,
-  
+  getUser,
 } = require('../controllers/userController')
 const { protect, adminCheck} = require('../middleware/authMiddleware')
 
@@ -13,11 +13,11 @@ router.post('/', registerUser)
 router.post('/signin', loginUser) // รับจาก front
 
 router.route('/update-user').put(protect, updateUser)
-
 // Verify token from Client and POST user data back
 router.post('/current-user', protect, currentUser)
 
 
+router.get('/get-user', protect, getUser)
 
 
 

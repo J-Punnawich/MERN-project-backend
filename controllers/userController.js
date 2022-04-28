@@ -110,6 +110,14 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+const getUser = asyncHandler(async (req, res) =>{
+  try{
+    const userdata = await userSchema.findById(req.user.id)
+    res.json(userdata)
+  } catch(err){
+    console.log('user error')
+  }
+})
 
 
 // @desc  update user
@@ -163,9 +171,12 @@ const generateToken = (id) => {
   });
 };
 
+
+
+
 module.exports = {
   registerUser,
   loginUser,
   updateUser,
-  currentUser,
+  currentUser,getUser
 };

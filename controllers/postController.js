@@ -211,6 +211,12 @@ const getpayPost = asyncHandler(async (req, res) => {
   res.json({'calPrice':calPrice , 'boostPrice':boostPrice , 'totalPrice' : totalPrice ,'postExpireIn' :  post.postExpireIn })
 })
 
+
+const adgetPost  = asyncHandler(async (req, res) => {
+  const post = await postSchema.find({slipimg:{$nin:[null,'']}}).populate('user')
+  res.json(post)
+})
+
 module.exports = {
   getPosts,
   getUserPosts,
@@ -222,5 +228,6 @@ module.exports = {
   changeEnable,
 
   payPost,
-  getpayPost
+  getpayPost,
+  adgetPost
 };
